@@ -6,7 +6,7 @@ export function hostValidation(req: Request, res: Response, next: NextFunction) 
     host = host.split(',')[0].trim();
   }
   const hostname = host ? host.split(':')[0] : '';
-  const allowedHosts = ['backend.mysitask.com'];
+  const allowedHosts = ['backend.myaitask.io'];
   if (process.env.NODE_ENV === 'development') {
     allowedHosts.push('localhost', '127.0.0.1');
   }
