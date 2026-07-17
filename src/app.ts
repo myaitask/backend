@@ -2,27 +2,16 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import router from './routes/index.js'; // Use .js extension since we use NodeNext module resolution
+import { hostValidation } from './proxy.js';
 
 const app: Application = express();
 
-// Host validation middleware
-app.use((req: Request, res: Response, next: NextFunction) => {
-  const host = req.headers.host;
-  const hostname = host ? host.split(':')[0] : '';
-  const allowedHosts = ['backend.mysitask.com'];
-  if (process.env.NODE_ENV === 'development') {
-    allowedHosts.push('localhost', '127.0.0.1');
-  }
+// Trust proxy to support hosting behind reverse proxies (Render, AWS, GCP, Cloudflare, etc.)
+app.set('trust proxy', true);
 
-  if (!allowedHosts.includes(hostname)) {
-    return res.status(403).json({
-      success: false,
-      error: 'Forbidden',
-      message: 'Access Denied: Invalid Host',
-    });
-  }
-  next();
-});
+// Host validation middleware
+app.use(hostValidation);
+
 
 // Configure CORS
 const allowedOrigins = ['https://www.myaitask.io', 'http://www.myaitask.io'];
