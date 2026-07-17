@@ -12,10 +12,11 @@ export function hostValidation(req: Request, res: Response, next: NextFunction) 
   }
 
   if (!allowedHosts.includes(hostname)) {
+    console.warn(`[HostValidation Failed] Hostname: "${hostname}", Raw Host: "${req.headers.host}", X-Forwarded-Host: "${req.headers['x-forwarded-host']}"`);
     return res.status(403).json({
       success: false,
       error: 'Forbidden',
-      message: 'Access Denied: Invalid Host',
+      message: `Access Denied: Invalid Host. Received: "${hostname}"`,
     });
   }
   next();
